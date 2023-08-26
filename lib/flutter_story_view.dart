@@ -502,25 +502,22 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
             ),
           ),
         ),
+        if(story.caption?.isNotEmpty??false)
         AnimatedOpacity(
           duration: Duration(milliseconds: 200),
-          opacity: widget.enableOnHoldHide == false
-              ? 1
-              : !_isPaused
-                  ? 1
-                  : 0,
+          opacity:1,
           child: Container(
             height: 100,
             width: double.infinity,
-            color: Colors.black,
+            color: Colors.black.withOpacity(0.30),
             padding: EdgeInsets.only(top: 10),
             child: Column(
               children: [
                 Expanded(
                   child: Text(
-                      "${currentItemIndex == 0 ? widget.caption ?? "" : ""}"),
+                      "${currentItemIndex == 0 ? story.caption ?? "" : ""}",style: TextStyle(color:Colors.white),),
                 ),
-                Column(
+               /* Column(
                   children: [
                     Icon(Icons.keyboard_arrow_up),
                     SizedBox(
@@ -531,7 +528,7 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                 ),
                 SizedBox(
                   height: 10,
-                ),
+                ),*/
               ],
             ),
           ),
