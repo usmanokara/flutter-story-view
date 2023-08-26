@@ -19,7 +19,7 @@ class StoryItem {
 
   /// Constructs a new [StoryItem] instance with the given [url], [viewers], [type] and [duration].
   const StoryItem(
-      {required this.url, this.viewers, required this.type, this.duration = 3});
+      {required this.url, this.viewers, required this.type, this.duration = 3,this.caption, this.time, this.onClick,});
 
   /// Converts this [StoryItem] instance to a JSON format.
   Map<String, dynamic> toJson() =>
@@ -27,4 +27,8 @@ class StoryItem {
 
   /// Converts this [StoryItem] instance to a list of [StoryItem].
   List<StoryItem> toList() => List<StoryItem>.of([this]);
+
+  final String? caption;
+  final DateTime? time;
+  final Function? onClick;
 }

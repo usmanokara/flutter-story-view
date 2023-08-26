@@ -363,15 +363,19 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                             SizedBox(
                               height: 2,
                             ),
+                            if(story.time!=null)
                             Text(
-                              "${widget.createdAt == null ? DateFormat.jm().format(DateTime.now()) : DateFormat.jm().format(widget.createdAt!)}",
+                              "${DateFormat.jm().format(story.time!)}",
                               style: TextStyle(color: Colors.grey),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    GestureDetector(onTap: widget.onMenuTapListener,child: Icon(Icons.more_vert,color: Colors.white,))
+                    if(story.onClick!=null)
+                    GestureDetector(onTap: (){
+                      story.onClick?.call();
+                    },child: Icon(Icons.more_vert,color: Colors.white,))
                   ],
                 ),
               ],
