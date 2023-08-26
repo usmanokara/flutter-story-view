@@ -316,7 +316,7 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                   : 0,
           child: Container(
             height: 100,
-            padding: EdgeInsets.only(left: 10, right: 10, top: 40),
+            padding: EdgeInsets.only(left: 0, right: 0, top: 40),
             color: Colors.black,
             child: Column(
               children: [
@@ -358,7 +358,7 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                           children: [
                             Text(
                               "${widget.userInfo!.username != null ? widget.userInfo!.username! : "John Doe"}",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16,color: Colors.white),
                             ),
                             SizedBox(
                               height: 2,
@@ -371,7 +371,7 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                         ),
                       ),
                     ),
-                    GestureDetector(onTap: widget.onMenuTapListener,child: Icon(Icons.more_vert))
+                    GestureDetector(onTap: widget.onMenuTapListener,child: Icon(Icons.more_vert,color: Colors.white,))
                   ],
                 ),
               ],
