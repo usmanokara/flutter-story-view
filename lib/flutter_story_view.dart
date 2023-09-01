@@ -520,11 +520,10 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
               padding: EdgeInsets.only(top: 10),
               child: Column(
                 children: [
-                  Expanded(
-                    child: Text(
-                      "${currentItemIndex == 0 ? story.caption ?? "" : ""}",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                  Text(
+                    "${currentItemIndex == 0 ? story.caption ?? "" : ""}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
                   ),
                   Row(
                     children: [
