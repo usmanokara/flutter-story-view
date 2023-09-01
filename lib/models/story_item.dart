@@ -19,7 +19,14 @@ class StoryItem {
 
   /// Constructs a new [StoryItem] instance with the given [url], [viewers], [type] and [duration].
   const StoryItem(
-      {required this.url, this.viewers, required this.type, this.duration = 3,this.caption, this.time, this.onClick,});
+      {required this.url,
+      this.viewers,
+      required this.type,
+      this.duration = 3,
+      this.caption,
+      this.time,
+      this.onClick,
+      this.onReplySubmitted});
 
   /// Converts this [StoryItem] instance to a JSON format.
   Map<String, dynamic> toJson() =>
@@ -31,4 +38,5 @@ class StoryItem {
   final String? caption;
   final DateTime? time;
   final Function? onClick;
+  final Function(String text)? onReplySubmitted;
 }

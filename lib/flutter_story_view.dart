@@ -61,7 +61,7 @@ class FlutterStoryView extends StatefulWidget {
       {required this.onComplete,
       required this.onPageChanged,
       this.caption,
-        this.onMenuTapListener,
+      this.onMenuTapListener,
       this.userInfo,
       this.createdAt,
       required this.storyItems,
@@ -305,6 +305,7 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
 
   // Creates a single story item widget
   _storyItem(StoryItem story) {
+    TextEditingController controller = TextEditingController();
     return Column(
       children: [
         AnimatedOpacity(
@@ -358,24 +359,30 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                           children: [
                             Text(
                               "${widget.userInfo!.username != null ? widget.userInfo!.username! : "John Doe"}",
-                              style: TextStyle(fontSize: 16,color: Colors.white),
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white),
                             ),
                             SizedBox(
                               height: 2,
                             ),
-                            if(story.time!=null)
-                            Text(
-                              "${DateFormat.jm().format(story.time!)}",
-                              style: TextStyle(color: Colors.grey),
-                            ),
+                            if (story.time != null)
+                              Text(
+                                "${DateFormat.jm().format(story.time!)}",
+                                style: TextStyle(color: Colors.grey),
+                              ),
                           ],
                         ),
                       ),
                     ),
-                    if(story.onClick!=null)
-                    GestureDetector(onTap: (){
-                      story.onClick?.call();
-                    },child: Icon(Icons.more_vert,color: Colors.white,))
+                    if (story.onClick != null)
+                      GestureDetector(
+                          onTap: () {
+                            story.onClick?.call();
+                          },
+                          child: Icon(
+                            Icons.more_vert,
+                            color: Colors.white,
+                          ))
                   ],
                 ),
               ],
@@ -502,22 +509,59 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
             ),
           ),
         ),
-        if(story.caption?.isNotEmpty??false)
-        AnimatedOpacity(
-          duration: Duration(milliseconds: 200),
-          opacity:1,
-          child: Container(
-            height: 100,
-            width: double.infinity,
-            color: Colors.black.withOpacity(0.30),
-            padding: EdgeInsets.only(top: 10),
-            child: Column(
-              children: [
-                Expanded(
-                  child: Text(
-                      "${currentItemIndex == 0 ? story.caption ?? "" : ""}",style: TextStyle(color:Colors.white),),
-                ),
-               /* Column(
+        if (story.caption?.isNotEmpty ?? false)
+          AnimatedOpacity(
+            duration: Duration(milliseconds: 200),
+            opacity: 1,
+            child: Container(
+              height: 100,
+              width: double.infinity,
+              color: Colors.black.withOpacity(0.30),
+              padding: EdgeInsets.only(top: 10),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Text(
+                      "${currentItemIndex == 0 ? story.caption ?? "" : ""}",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: TextField(
+                              controller: controller,
+                              style: TextStyle(color: Colors.white),
+                            )),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (controller.text.isEmpty) return;
+                                  story.onReplySubmitted?.call(controller.text);
+                                  controller.text = "";
+                                },
+                                child: Icon(
+                                  Icons.send,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                  /* Column(
                   children: [
                     Icon(Icons.keyboard_arrow_up),
                     SizedBox(
@@ -529,10 +573,10 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                 SizedBox(
                   height: 10,
                 ),*/
-              ],
+                ],
+              ),
             ),
           ),
-        ),
       ],
     );
   }
