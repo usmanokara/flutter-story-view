@@ -258,8 +258,12 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
     super.dispose();
   }
 
+  TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    var story = widget.storyItems[currentItemIndex];
+
     return Container(
       color: Colors.black,
       child: GestureDetector(
@@ -295,6 +299,81 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                 indicatorColor: widget.indicatorColor,
                 indicatorHeight: widget.indicatorHeight,
                 indicatorValueColor: widget.indicatorValueColor,
+              ),
+            ),
+            SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if ((story.caption?.isNotEmpty ?? false))
+                    GestureDetector(
+                      onTap: () async {
+                        /*   await showTextAnswerDialog(
+                        context: context, title: "", keyword: "sas"); */
+                      },
+                      child: Text(
+                        "${currentItemIndex == 0 ? story.caption ?? "" : ""}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  GestureDetector(
+                    onTap: () async {
+                      /*    await showTextAnswerDialog(
+                      context: context, title: "", keyword: "sas"); */
+                    },
+                    child: Container(
+                      height: 50,
+                      width: double.infinity,
+                      margin: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.4),
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: [
+                          SizedBox(width: 10),
+                          Expanded(
+                              child: TextField(
+                            controller: controller,
+                            decoration:
+                                InputDecoration(border: InputBorder.none),
+                            style: TextStyle(color: Colors.white),
+                          )),
+                          SizedBox(width: 10),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (controller.text.isEmpty) return;
+                                story.onReplySubmitted?.call(controller.text);
+                                controller.text = "";
+                              },
+                              child: Icon(
+                                Icons.send,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                  /* Column(
+                children: [
+                  Icon(Icons.keyboard_arrow_up),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  Text("Replay"),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),*/
+                ],
               ),
             ),
           ],
@@ -509,73 +588,6 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
             ),
           ),
         ),
-        if (story.caption?.isNotEmpty ?? false)
-          AnimatedOpacity(
-            duration: Duration(milliseconds: 200),
-            opacity: 1,
-            child: Container(
-              height: 100,
-              width: double.infinity,
-              color: Colors.black.withOpacity(0.30),
-              padding: EdgeInsets.only(top: 10),
-              child: Column(
-                children: [
-                  Text(
-                    "${currentItemIndex == 0 ? story.caption ?? "" : ""}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                child: TextField(
-                              controller: controller,
-                              style: TextStyle(color: Colors.white),
-                            )),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: GestureDetector(
-                                onTap: () {
-                                  if (controller.text.isEmpty) return;
-                                  story.onReplySubmitted?.call(controller.text);
-                                  controller.text = "";
-                                },
-                                child: Icon(
-                                  Icons.send,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                  /* Column(
-                  children: [
-                    Icon(Icons.keyboard_arrow_up),
-                    SizedBox(
-                      height: 3,
-                    ),
-                    Text("Replay"),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),*/
-                ],
-              ),
-            ),
-          ),
       ],
     );
   }
