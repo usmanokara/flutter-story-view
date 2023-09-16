@@ -31,7 +31,7 @@ class _StoryImageState extends State<StoryImage> {
               )
             : CachedNetworkImage(
                 imageUrl: "${widget.imageUrl}",
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
               ));
   }
 }

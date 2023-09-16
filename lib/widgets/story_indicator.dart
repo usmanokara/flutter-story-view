@@ -78,7 +78,7 @@ class _StoryIndicatorState extends State<StoryIndicator> {
 
     /// Display the progress indicators in a row.
     return Padding(
-      padding: const EdgeInsets.only(top: 40.0),
+      padding: const EdgeInsets.only(top: 10.0),
       child: Row(
         children: indicators,
       ),

@@ -1,13 +1,15 @@
 import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:video_player/video_player.dart';
+import 'package:flutter_story_view/file_downloader.dart';
 import 'package:flutter_story_view/models/story_item.dart';
 import 'package:flutter_story_view/models/user_info.dart';
 import 'package:flutter_story_view/widgets/story_image.dart';
 import 'package:flutter_story_view/widgets/story_indicator.dart';
 import 'package:flutter_story_view/widgets/story_video.dart';
+import 'package:intl/intl.dart';
+import 'package:video_player/video_player.dart';
 
 /// A StatefulWidget that displays a series of story items with a customizable
 /// progress indicator and user-defined callback functions for navigation and
@@ -111,23 +113,28 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
   }
 
   // Start playing the story at the given index
-  void _playStory(int index) {
+  void _playStory(int index) async {
     /// If story is video
     var story = widget.storyItems[index];
 
     if (story.type == StoryItemType.video) {
       /// Dispose the previous _videoController (if any) before initializing new one.
       _videoController?.dispose();
-
       setState(() {
         _isVideoLoading = true; // Set loading to true when video starts loading
       });
+      var file = await DownloadUtils.download(story.url, story.id ?? "",
+          extension: story.extention);
+      print(file);
+
       // Check if the URL is an asset or a network URL
       bool isAsset = story.url.startsWith('assets/');
 
-      _videoController = isAsset
+      /*  _videoController = isAsset
           ? VideoPlayerController.asset(story.url)
           : VideoPlayerController.networkUrl(Uri.parse(story.url));
+       */
+      _videoController = VideoPlayerController.file(file!);
 
       _videoController!
         ..initialize().then((_) {
@@ -263,105 +270,227 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
   @override
   Widget build(BuildContext context) {
     var story = widget.storyItems[currentItemIndex];
-
-    return Container(
-      color: Colors.black,
-      child: GestureDetector(
-        child: Stack(
-          children: [
-            /// All story items mapped in the Stack widget
-            Stack(
-              children: List.generate(
-                widget.storyItems.length,
-                (index) {
-                  var story = widget.storyItems[index];
-                  return Visibility(
-                      visible: currentItemIndex == index,
-                      maintainState: true,
-                      child: _storyItem(story));
-                },
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+          child: Container(
+        color: Colors.black,
+        child: GestureDetector(
+          child: Stack(
+            children: [
+              /// All story items mapped in the Stack widget
+              Stack(
+                children: List.generate(
+                  widget.storyItems.length,
+                  (index) {
+                    var story = widget.storyItems[index];
+                    return Visibility(
+                        visible: currentItemIndex == index,
+                        maintainState: true,
+                        child: _storyItem(story));
+                  },
+                ),
               ),
-            ),
 
-            /// Story indicator which plays with timer, progress and total story Items
-            /// check out widget in widgets dir.
-            AnimatedOpacity(
-              duration: Duration(milliseconds: 200),
-              opacity: widget.enableOnHoldHide == false
-                  ? 1
-                  : !_isPaused
-                      ? 1
-                      : 0,
-              child: StoryIndicator(
-                storyItemsLen: widget.storyItems.length,
-                currentItemIndex: currentItemIndex, // Add this
-                progress: _progress,
-                indicatorColor: widget.indicatorColor,
-                indicatorHeight: widget.indicatorHeight,
-                indicatorValueColor: widget.indicatorValueColor,
-              ),
-            ),
-            SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if ((story.caption?.isNotEmpty ?? false))
+              /// Story indicator which plays with timer, progress and total story Items
+              /// check out widget in widgets dir.
+              ///
+              ///
+              ///
+
+              Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                        Colors.black.withOpacity(0.35),
+                        Colors.black.withOpacity(0.40),
+                        Colors.transparent,
+                      ])),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      AnimatedOpacity(
+                        duration: Duration(milliseconds: 200),
+                        opacity: widget.enableOnHoldHide == false
+                            ? 1
+                            : !_isPaused
+                                ? 1
+                                : 0,
+                        child: StoryIndicator(
+                          storyItemsLen: widget.storyItems.length,
+                          currentItemIndex: currentItemIndex, // Add this
+                          progress: _progress,
+                          indicatorColor: widget.indicatorColor,
+                          indicatorHeight: widget.indicatorHeight,
+                          indicatorValueColor: widget.indicatorValueColor,
+                        ),
+                      ),
+                      AnimatedOpacity(
+                        duration: Duration(milliseconds: 200),
+                        opacity: widget.enableOnHoldHide == false
+                            ? 1
+                            : !_isPaused
+                                ? 1
+                                : 0,
+                        child: Container(
+                          height: 100,
+                          padding: EdgeInsets.only(left: 0, right: 0, top: 10),
+                          // color: Colors.black,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 5,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                      onTap: widget.onComplete,
+                                      child: Icon(
+                                        Icons.arrow_back,
+                                        color: Colors.white,
+                                      )),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    width: 45,
+                                    height: 45,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(30),
+                                      child: CachedNetworkImage(
+                                          imageUrl: widget
+                                                      .userInfo!.profileUrl !=
+                                                  null
+                                              ? widget.userInfo!.profileUrl!
+                                              : "https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=699&q=80",
+                                          fit: BoxFit.cover),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "${widget.userInfo!.username != null ? widget.userInfo!.username! : "John Doe"}",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.white),
+                                          ),
+                                          SizedBox(
+                                            height: 2,
+                                          ),
+                                          if (story.time != null)
+                                            Text(
+                                              "${DateFormat.jm().format(story.time!)}",
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  if (story.onClick != null)
+                                    GestureDetector(
+                                        onTap: () {
+                                          story.onClick?.call();
+                                        },
+                                        child: Icon(
+                                          Icons.more_vert,
+                                          color: Colors.white,
+                                        ))
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
+
+              SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if ((story.caption?.isNotEmpty ?? false))
+                      GestureDetector(
+                        onTap: () async {
+                          /*   await showTextAnswerDialog(
+                        context: context, title: "", keyword: "sas"); */
+                        },
+                        child: Text(
+                          "${currentItemIndex == 0 ? story.caption ?? "" : ""}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     GestureDetector(
                       onTap: () async {
-                        /*   await showTextAnswerDialog(
-                        context: context, title: "", keyword: "sas"); */
-                      },
-                      child: Text(
-                        "${currentItemIndex == 0 ? story.caption ?? "" : ""}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  GestureDetector(
-                    onTap: () async {
-                      /*    await showTextAnswerDialog(
+                        /*    await showTextAnswerDialog(
                       context: context, title: "", keyword: "sas"); */
-                    },
-                    child: Container(
-                      height: 50,
-                      width: double.infinity,
-                      margin: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.4),
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(width: 10),
-                          Expanded(
-                              child: TextField(
-                            controller: controller,
-                            decoration:
-                                InputDecoration(border: InputBorder.none),
-                            style: TextStyle(color: Colors.white),
-                          )),
-                          SizedBox(width: 10),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: GestureDetector(
-                              onTap: () {
-                                if (controller.text.isEmpty) return;
-                                story.onReplySubmitted?.call(controller.text);
-                                controller.text = "";
-                              },
-                              child: Icon(
-                                Icons.send,
-                                color: Colors.white,
+                      },
+                      child: Container(
+                        height: 50,
+                        width: double.infinity,
+                        margin: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.4),
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          children: [
+                            SizedBox(width: 10),
+                            Expanded(
+                                child: TextField(
+                              controller: controller,
+                              decoration:
+                                  InputDecoration(border: InputBorder.none),
+                              style: TextStyle(color: Colors.white),
+                            )),
+                            SizedBox(width: 10),
+                            GestureDetector(
+                                onTap: () {
+                                  story.onLikeSubmitted?.call();
+                                },
+                                child: Icon(
+                                  Icons.favorite,
+                                  color: Colors.white,
+                                )),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (controller.text.isEmpty) return;
+                                  story.onReplySubmitted?.call(controller.text);
+                                  controller.text = "";
+                                },
+                                child: Icon(
+                                  Icons.send,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                  /* Column(
+                    )
+                    /* Column(
                 children: [
                   Icon(Icons.keyboard_arrow_up),
                   SizedBox(
@@ -373,12 +502,13 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
               SizedBox(
                 height: 10,
               ),*/
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+      )),
     );
   }
 
@@ -387,7 +517,7 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
     TextEditingController controller = TextEditingController();
     return Column(
       children: [
-        AnimatedOpacity(
+        /*  AnimatedOpacity(
           duration: Duration(milliseconds: 200),
           opacity: widget.enableOnHoldHide == false
               ? 1
@@ -468,6 +598,7 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
             ),
           ),
         ),
+        */
         Expanded(
           child: Container(
             child: Stack(
