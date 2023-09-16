@@ -438,58 +438,60 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-                    GestureDetector(
-                      onTap: () async {
-                        /*    await showTextAnswerDialog(
+                    if (widget.storyItems[currentItemIndex].showControls)
+                      GestureDetector(
+                        onTap: () async {
+                          /*    await showTextAnswerDialog(
                       context: context, title: "", keyword: "sas"); */
-                      },
-                      child: Container(
-                        height: 50,
-                        width: double.infinity,
-                        margin: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.4),
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(width: 10),
-                            Expanded(
-                                child: TextField(
-                              controller: controller,
-                              decoration:
-                                  InputDecoration(border: InputBorder.none),
-                              style: TextStyle(color: Colors.white),
-                            )),
-                            SizedBox(width: 10),
-                            GestureDetector(
-                                onTap: () {
-                                  story.onLikeSubmitted?.call();
-                                },
-                                child: Icon(
-                                  Icons.favorite,
-                                  color: Colors.white,
-                                )),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: GestureDetector(
-                                onTap: () {
-                                  if (controller.text.isEmpty) return;
-                                  story.onReplySubmitted?.call(controller.text);
-                                  controller.text = "";
-                                },
-                                child: Icon(
-                                  Icons.send,
-                                  color: Colors.white,
+                        },
+                        child: Container(
+                          height: 50,
+                          width: double.infinity,
+                          margin: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.4),
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            children: [
+                              SizedBox(width: 10),
+                              Expanded(
+                                  child: TextField(
+                                controller: controller,
+                                decoration:
+                                    InputDecoration(border: InputBorder.none),
+                                style: TextStyle(color: Colors.white),
+                              )),
+                              SizedBox(width: 10),
+                              GestureDetector(
+                                  onTap: () {
+                                    story.onLikeSubmitted?.call();
+                                  },
+                                  child: Icon(
+                                    Icons.favorite,
+                                    color: Colors.white,
+                                  )),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (controller.text.isEmpty) return;
+                                    story.onReplySubmitted
+                                        ?.call(controller.text);
+                                    controller.text = "";
+                                  },
+                                  child: Icon(
+                                    Icons.send,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                            )
-                          ],
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    )
+                      )
                     /* Column(
                 children: [
                   Icon(Icons.keyboard_arrow_up),

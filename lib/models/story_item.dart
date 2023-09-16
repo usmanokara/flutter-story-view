@@ -29,6 +29,7 @@ class StoryItem {
       this.duration = 3,
       this.caption,
       this.time,
+      required this.showControls,
       this.onClick,
       this.onReplySubmitted,
       this.onLikeSubmitted});
@@ -45,4 +46,5 @@ class StoryItem {
   final Function? onClick;
   final Function(String text)? onReplySubmitted;
   final Function()? onLikeSubmitted;
+  final bool showControls;
 }
