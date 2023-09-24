@@ -199,6 +199,7 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
     if (currentItemIndex == widget.storyItems.length - 1) {
       widget.onComplete();
     } else {
+      _videoController?.dispose();
       currentItemIndex++;
       widget.onPageChanged(currentItemIndex);
       setState(() {
