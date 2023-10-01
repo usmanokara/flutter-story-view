@@ -429,6 +429,7 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if ((story.caption?.isNotEmpty ?? false))
                       GestureDetector(
@@ -436,10 +437,15 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                           /*   await showTextAnswerDialog(
                         context: context, title: "", keyword: "sas"); */
                         },
-                        child: Text(
-                          "${currentItemIndex == 0 ? story.caption ?? "" : ""}",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "${currentItemIndex == 0 ? story.caption ?? "" : ""}",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
                         ),
                       ),
                     if (widget.storyItems[currentItemIndex].showControls)
