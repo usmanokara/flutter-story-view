@@ -18,11 +18,13 @@ class StoryItem {
   // Add a duration property for each StoryItem
   final int? duration;
   final String? id;
+  final bool? isLiked;
 
   /// Constructs a new [StoryItem] instance with the given [url], [viewers], [type] and [duration].
   const StoryItem(
       {required this.url,
       required this.id,
+      required this.isLiked,
       required this.extention,
       this.viewers,
       required this.type,

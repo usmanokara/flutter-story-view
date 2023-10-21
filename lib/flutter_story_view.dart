@@ -275,6 +275,7 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
   Widget build(BuildContext context) {
     var story = widget.storyItems[currentItemIndex];
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
       body: SafeArea(
           child: Container(
@@ -476,11 +477,16 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                               SizedBox(width: 10),
                               GestureDetector(
                                   onTap: () {
+                                    if (story.isLiked ?? false) {
+                                      return;
+                                    }
                                     story.onLikeSubmitted?.call();
                                   },
                                   child: Icon(
                                     Icons.favorite,
-                                    color: Colors.white,
+                                    color: (story.isLiked ?? false)
+                                        ? Colors.yellow
+                                        : Colors.white,
                                   )),
                               Padding(
                                 padding:
