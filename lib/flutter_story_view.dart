@@ -101,6 +101,7 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
   bool _isVideoLoading = false;
 
   bool _isPaused = false;
+  bool isFocus = false;
 
   @override
   void initState() {
@@ -468,11 +469,20 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                             children: [
                               SizedBox(width: 10),
                               Expanded(
-                                  child: TextField(
-                                controller: controller,
-                                decoration:
-                                    InputDecoration(border: InputBorder.none),
-                                style: TextStyle(color: Colors.white),
+                                  child: Focus(
+                                child: TextField(
+                                  controller: controller,
+                                  decoration:
+                                      InputDecoration(border: InputBorder.none),
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                onFocusChange: (hasFocus) {
+                                  isFocus = hasFocus;
+                                  if (hasFocus) {
+                                    _animationController?.stop();
+                                  } else
+                                    _animationController?.repeat();
+                                },
                               )),
                               SizedBox(width: 10),
                               GestureDetector(
