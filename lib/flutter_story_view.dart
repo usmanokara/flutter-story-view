@@ -439,15 +439,20 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                           /*   await showTextAnswerDialog(
                         context: context, title: "", keyword: "sas"); */
                         },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "${currentItemIndex == 0 ? story.caption ?? "" : ""}",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.50)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "${currentItemIndex == 0 ? story.caption ?? "" : ""}",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     if (widget.storyItems[currentItemIndex].showControls)
@@ -526,10 +531,9 @@ class _FlutterStoryViewState extends State<FlutterStoryView>
                   ),
                   Text("Replay"),
                 ],
-              ),
-              SizedBox(
-                height: 10,
               ),*/
+                    ,
+                    SizedBox(height: MediaQuery.sizeOf(context).height * 0.1),
                   ],
                 ),
               ),
